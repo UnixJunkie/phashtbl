@@ -14,6 +14,8 @@ let key_of_string (k_str: string): 'a =
 let value_of_string (v_str: string): 'b =
   (Marshal.from_string v_str 0: 'b)
 
+(* FBR: factorize code to the max *)
+
 module StrKeyToGenVal = struct
 
   type 'b t = Dbm.t
@@ -140,8 +142,8 @@ module GenKeyToGenVal = struct
 
   let fold f db init =
     let acc = ref init in
-    iter (fun k_str v_str ->
-        acc := f (key_of_string k_str) (value_of_string v_str) !acc
+    iter (fun k v ->
+        acc := f k v !acc
       ) db;
     !acc
 
@@ -183,8 +185,8 @@ module GenKeyToStrVal = struct
 
   let fold f db init =
     let acc = ref init in
-    iter (fun k_str v ->
-        acc := f (key_of_string k_str) v !acc
+    iter (fun k v ->
+        acc := f k v !acc
       ) db;
     !acc
 
