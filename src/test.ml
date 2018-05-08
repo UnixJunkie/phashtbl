@@ -11,15 +11,17 @@ let main () =
   printf "1 not in ht\n%!";
   Ht.add ht 1 2;
   assert(Ht.mem ht 1);
-  printf "1 in ht\n%!";
   assert(Ht.find ht 1 = 2);
   Ht.iter (fun k v -> printf "%d -> %d\n%!" k v) ht;
   let acc = Ht.fold (fun k v acc -> (k, v) :: acc) ht [] in
   assert(acc = [(1,2)]);
-  Ht.remove ht 1;
-  assert(not (Ht.mem ht 1));
-  printf "1 no more in ht\n%!";
   Ht.close ht;
+  let ht1 = Ht.open_existing tmp_fn in
+  assert(Ht.find ht1 1 = 2);
+  Ht.remove ht1 1;
+  assert(not (Ht.mem ht1 1));
+  printf "1 no more in ht\n%!";
+  Ht.close ht1;
   ()
 
 let () = main ()
