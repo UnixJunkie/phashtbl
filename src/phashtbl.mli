@@ -37,10 +37,8 @@ module StrKeyToStrVal : sig
 
   type t
 
-  (* to create and populate a new DB *)
   val open_new: filename -> t
 
-  (* to open an existing one *)
   val open_existing: filename -> t
 
   val close: t -> unit
@@ -57,7 +55,6 @@ module StrKeyToStrVal : sig
 
   val iter: (string -> string -> unit) -> t -> unit
 
-  (* WARNING: only use on a small table *)
   val fold: (string -> string -> 'c -> 'c) -> t -> 'c -> 'c
 
 end
@@ -66,10 +63,8 @@ module GenKeyToGenVal : sig
 
   type t
 
-  (* to create and populate a new DB *)
   val open_new: filename -> t
 
-  (* to open an existing one *)
   val open_existing: filename -> t
 
   val close: t -> unit
@@ -86,7 +81,6 @@ module GenKeyToGenVal : sig
 
   val iter: ('a -> 'b -> unit) -> t -> unit
 
-  (* WARNING: only use on a small table *)
   val fold: ('a -> 'b -> 'c -> 'c) -> t -> 'c -> 'c
 
 end
@@ -95,10 +89,8 @@ module GenKeyToStrVal : sig
 
   type t
 
-  (* to create and populate a new DB *)
   val open_new: filename -> t
 
-  (* to open an existing one *)
   val open_existing: filename -> t
 
   val close: t -> unit
@@ -115,7 +107,6 @@ module GenKeyToStrVal : sig
 
   val iter: ('a -> string -> unit) -> t -> unit
 
-  (* WARNING: only use on a small table *)
   val fold: ('a -> string -> 'c -> 'c) -> t -> 'c -> 'c
 
 end
