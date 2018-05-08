@@ -14,9 +14,7 @@ let key_of_string (k_str: string): 'a =
 let value_of_string (v_str: string): 'b =
   Marshal.from_string v_str 0
 
-(* FBR: why don't I expose Dbm.remove ?! *)
 (* FBR: factorize out open_new, open_existing and close? *)
-(* FBR: create .mli file and hide types from there *)
 
 (* val find: t -> string -> 'b
    we have to marshal and unmarshal values *)
@@ -44,6 +42,9 @@ module StrKeyToGenVal = struct
 
   let replace (db: t) (k: string) (v: 'b): unit =
     Dbm.replace db k (string_of_value v)
+
+  let remove (db: t) (k: string): unit =
+    Dbm.remove db k
 
   let find (db: t) (k: string): 'b =
     value_of_string (Dbm.find db k)
@@ -88,6 +89,9 @@ module StrKeyToStrVal = struct
   let replace (db: t) (k: string) (v: string): unit =
     Dbm.replace db k v
 
+  let remove (db: t) (k: string): unit =
+    Dbm.remove db k
+
   let find (db: t) (k: string): string =
     Dbm.find db k
 
@@ -130,15 +134,18 @@ module GenKeyToGenVal = struct
   let replace (db: t) (k: 'a) (v: 'b): unit =
     Dbm.replace db (string_of_key k) (string_of_value v)
 
+  let remove (db: t) (k: 'a): unit =
+    Dbm.remove db (string_of_key k)
+
   let find (db: t) (k: 'a): 'b =
-    Dbm.find db (string_of_key k)
+    value_of_string (Dbm.find db (string_of_key k))
 
   let iter (f: 'a -> 'b -> unit) (db: t): unit =
     Dbm.iter (fun k_str v_str ->
         f (key_of_string k_str) (value_of_string v_str)
       ) db
 
-  let fold (f: 'a -> 'b -> 'b -> 'b) (db: t) (init: 'b): 'b =
+  let fold (f: 'a -> 'b -> 'c -> 'c) (db: t) (init: 'c): 'c =
     let acc = ref init in
     iter (fun k_str v_str ->
         acc := f (key_of_string k_str) (value_of_string v_str) !acc
@@ -169,6 +176,9 @@ module GenKeyToStrVal = struct
 
   let replace (db: t) (k: 'a) (v: string): unit =
     Dbm.replace db (string_of_key k) v
+
+  let remove (db: t) (k: 'a): unit =
+    Dbm.remove db (string_of_key k)
 
   let find (db: t) (k: 'a): string =
     Dbm.find db (string_of_key k)
