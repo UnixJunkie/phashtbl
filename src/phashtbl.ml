@@ -1,4 +1,3 @@
-(* a hash table stored on disk because it would not fit in RAM *)
 
 type filename = string
 
@@ -14,8 +13,8 @@ let key_of_string (k_str: string): 'a =
 let value_of_string (v_str: string): 'b =
   (Marshal.from_string v_str 0: 'b)
 
-(* FBR: factorize code to the max *)
-
+(* val find: t -> string -> 'b
+   we have to marshal/unmarshal values *)
 module StrKeyToGenVal = struct
 
   type 'b t = Dbm.t
@@ -60,7 +59,7 @@ module StrKeyToGenVal = struct
 end
 
 (* val find: t -> string -> string
-   this is what dbm provides; not any marshal/unmarshal needed *)
+   this is what dbm provides in fact; not any marshal/unmarshal needed *)
 module StrKeyToStrVal = struct
 
   type t = Dbm.t
@@ -149,6 +148,8 @@ module GenKeyToGenVal = struct
 
 end
 
+(* val find: t -> 'a -> string
+   we have to marshal/unmarshal keys *)
 module GenKeyToStrVal = struct
 
   type 'a t = Dbm.t
