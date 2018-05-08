@@ -1,4 +1,4 @@
-.PHONY: build install uninstall reinstall doc
+.PHONY: build install uninstall reinstall doc test
 
 build:
 	jbuilder build @install -j 16
@@ -20,3 +20,7 @@ reinstall: uninstall install
 doc:
 	mkdir -p doc
 	ocamldoc -html -d doc src/phashtbl.mli
+
+test:
+	jbuilder build _build/default/src/test.exe
+	_build/default/src/test.exe
