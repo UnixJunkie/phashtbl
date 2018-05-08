@@ -16,7 +16,7 @@ let value_of_string (v_str: string): 'b =
 
 module StrKeyToGenVal = struct
 
-  type t = Dbm.t
+  type 'b t = Dbm.t
 
   let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
@@ -106,7 +106,7 @@ end
    we have to marshal/unmarshal keys and values *)
 module GenKeyToGenVal = struct
 
-  type t = Dbm.t
+  type ('a, 'b) t = Dbm.t
 
   let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
@@ -149,7 +149,7 @@ end
 
 module GenKeyToStrVal = struct
 
-  type t = Dbm.t
+  type 'a t = Dbm.t
 
   let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
