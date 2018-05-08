@@ -9,53 +9,46 @@ let string_of_value (v: 'b): string =
   Marshal.(to_string v [No_sharing])
 
 let key_of_string (k_str: string): 'a =
-  Marshal.from_string k_str 0
+  (Marshal.from_string k_str 0: 'a)
 
 let value_of_string (v_str: string): 'b =
-  Marshal.from_string v_str 0
+  (Marshal.from_string v_str 0: 'b)
 
-(* FBR: factorize out open_new, open_existing and close? *)
-
-(* val find: t -> string -> 'b
-   we have to marshal and unmarshal values *)
 module StrKeyToGenVal = struct
 
   type t = Dbm.t
 
-  (* to create and populate a new DB *)
-  let open_new (fn: filename): t =
+  let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
 
-  (* to open an existing one *)
-  let open_existing (fn: filename): t =
+  let open_existing fn =
     Dbm.(opendbm fn [Dbm_rdwr] 0o600)
 
-  let close (db: t): unit =
+  let close db =
     Dbm.close db
 
-  let mem (db: t) (k: string): bool =
+  let mem db k =
     try let _ = Dbm.find db k in true
     with Not_found -> false
 
-  let add (db: t) (k: string) (v: 'b): unit =
+  let add db k v =
     Dbm.add db k (string_of_value v)
 
-  let replace (db: t) (k: string) (v: 'b): unit =
+  let replace db k v =
     Dbm.replace db k (string_of_value v)
 
-  let remove (db: t) (k: string): unit =
+  let remove db k =
     Dbm.remove db k
 
-  let find (db: t) (k: string): 'b =
+  let find db k =
     value_of_string (Dbm.find db k)
 
-  let iter (f: string -> 'b -> unit) (db: t): unit =
+  let iter f db =
     Dbm.iter (fun k v_str ->
         f k (value_of_string v_str)
       ) db
 
-  (* WARNING: only use on a small table *)
-  let fold (f: string -> 'b -> 'c -> 'c) (db: t) (init: 'c): 'c =
+  let fold f db init =
     let acc = ref init in
     iter (fun k v ->
         acc := f k v !acc
@@ -70,37 +63,37 @@ module StrKeyToStrVal = struct
 
   type t = Dbm.t
 
-  let open_new (fn: filename): t =
+  let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
 
-  let open_existing (fn: filename): t =
+  let open_existing fn = 
     Dbm.(opendbm fn [Dbm_rdwr] 0o600)
 
-  let close (db: t): unit =
+  let close db =
     Dbm.close db
 
-  let mem (db: t) (k: string) =
+  let mem db k =
     try let _ = Dbm.find db k in true
     with Not_found -> false
 
-  let add (db: t) (k: string) (v: string): unit =
+  let add db k v =
     Dbm.add db k v
 
-  let replace (db: t) (k: string) (v: string): unit =
+  let replace db k v =
     Dbm.replace db k v
 
-  let remove (db: t) (k: string): unit =
+  let remove db k =
     Dbm.remove db k
 
-  let find (db: t) (k: string): string =
+  let find db k =
     Dbm.find db k
 
-  let iter (f: string -> string -> unit) (db: t): unit =
+  let iter f db =
     Dbm.iter (fun k v ->
         f k v
       ) db
 
-  let fold (f: string -> string -> 'c -> 'c) (db: t) (init: 'c): 'c =
+  let fold f db init =
     let acc = ref init in
     iter (fun k v ->
         acc := f k v !acc
@@ -115,37 +108,37 @@ module GenKeyToGenVal = struct
 
   type t = Dbm.t
 
-  let open_new (fn: filename): t =
+  let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
 
-  let open_existing (fn: filename): t =
+  let open_existing fn =
     Dbm.(opendbm fn [Dbm_rdwr] 0o600)
 
-  let close (db: t): unit =
+  let close db =
     Dbm.close db
 
-  let mem (db: t) (k: 'a): bool =
+  let mem db k =
     try let _ = Dbm.find db (string_of_key k) in true
     with Not_found -> false
 
-  let add (db: t) (k: 'a) (v: 'b): unit =
+  let add db k v =
     Dbm.add db (string_of_key k) (string_of_value v)
 
-  let replace (db: t) (k: 'a) (v: 'b): unit =
+  let replace db k v =
     Dbm.replace db (string_of_key k) (string_of_value v)
 
-  let remove (db: t) (k: 'a): unit =
+  let remove db k =
     Dbm.remove db (string_of_key k)
 
-  let find (db: t) (k: 'a): 'b =
+  let find db k =
     value_of_string (Dbm.find db (string_of_key k))
 
-  let iter (f: 'a -> 'b -> unit) (db: t): unit =
+  let iter f db =
     Dbm.iter (fun k_str v_str ->
         f (key_of_string k_str) (value_of_string v_str)
       ) db
 
-  let fold (f: 'a -> 'b -> 'c -> 'c) (db: t) (init: 'c): 'c =
+  let fold f db init =
     let acc = ref init in
     iter (fun k_str v_str ->
         acc := f (key_of_string k_str) (value_of_string v_str) !acc
@@ -158,37 +151,37 @@ module GenKeyToStrVal = struct
 
   type t = Dbm.t
 
-  let open_new (fn: filename): t =
+  let open_new fn =
     Dbm.(opendbm fn [Dbm_rdwr; Dbm_create] 0o600)
 
-  let open_existing (fn: filename): t =
+  let open_existing fn =
     Dbm.(opendbm fn [Dbm_rdwr] 0o600)
 
-  let close (db: t): unit =
+  let close db =
     Dbm.close db
 
-  let mem (db: t) (k: 'a): bool =
+  let mem db k =
     try let _ = Dbm.find db (string_of_key k) in true
     with Not_found -> false
 
-  let add (db: t) (k: 'a) (v: string): unit =
+  let add db k v =
     Dbm.add db (string_of_key k) v
 
-  let replace (db: t) (k: 'a) (v: string): unit =
+  let replace db k v =
     Dbm.replace db (string_of_key k) v
 
-  let remove (db: t) (k: 'a): unit =
+  let remove db k =
     Dbm.remove db (string_of_key k)
 
-  let find (db: t) (k: 'a): string =
+  let find db k =
     Dbm.find db (string_of_key k)
 
-  let iter (f: 'a -> string -> unit) (db: t): unit =
+  let iter f db =
     Dbm.iter (fun k_str v ->
         f (key_of_string k_str) v
       ) db
 
-  let fold (f: 'a -> string -> 'c -> 'c) (db: t) (init: 'c): 'c =
+  let fold f db init =
     let acc = ref init in
     iter (fun k_str v ->
         acc := f (key_of_string k_str) v !acc
