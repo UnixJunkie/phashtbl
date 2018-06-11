@@ -13,6 +13,10 @@ let key_of_string (k_str: string): 'a =
 let value_of_string (v_str: string): 'b =
   (Marshal.from_string v_str 0: 'b)
 
+let rm_dbm_files fn =
+  Sys.remove (fn ^ ".pag");
+  Sys.remove (fn ^ ".dir")
+
 (* val find: t -> string -> 'b
    we have to marshal/unmarshal values *)
 module StrKeyToGenVal = struct
@@ -27,6 +31,9 @@ module StrKeyToGenVal = struct
 
   let close db =
     Dbm.close db
+
+  let destroy fn =
+    rm_dbm_files fn
 
   let mem db k =
     try let _ = Dbm.find db k in true
@@ -73,6 +80,9 @@ module StrKeyToStrVal = struct
   let close db =
     Dbm.close db
 
+  let destroy fn =
+    rm_dbm_files fn
+
   let mem db k =
     try let _ = Dbm.find db k in true
     with Not_found -> false
@@ -118,6 +128,9 @@ module GenKeyToGenVal = struct
   let close db =
     Dbm.close db
 
+  let destroy fn =
+    rm_dbm_files fn
+
   let mem db k =
     try let _ = Dbm.find db (string_of_key k) in true
     with Not_found -> false
@@ -162,6 +175,9 @@ module GenKeyToStrVal = struct
 
   let close db =
     Dbm.close db
+
+  let destroy fn =
+    rm_dbm_files fn
 
   let mem db k =
     try let _ = Dbm.find db (string_of_key k) in true

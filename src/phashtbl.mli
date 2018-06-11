@@ -20,6 +20,9 @@ module GenKeyToGenVal : sig
   (** [close pht] closes the previously opened [pht]. *)
   val close: ('a, 'b) t -> unit
 
+  (** [destroy fn] rm dbm files [fn ^ ".pag"] and [fn ^ ".dir"]. *)
+  val destroy: string -> unit
+
   (** [mem pht key] checks if [key] is bound in [pht]. *)
   val mem: ('a, 'b) t -> 'a -> bool
 
@@ -67,6 +70,9 @@ module StrKeyToGenVal : sig
 
   (** [close pht] closes the previously opened [pht]. *)
   val close: 'b t -> unit
+
+  (** [destroy fn] rm dbm files [fn ^ ".pag"] and [fn ^ ".dir"]. *)
+  val destroy: string -> unit
 
   (** [mem pht key] checks if [key] is bound in [pht]. *)
   val mem: 'b t -> string -> bool
@@ -116,6 +122,9 @@ module GenKeyToStrVal : sig
   (** [close pht] closes the previously opened [pht]. *)
   val close: 'a t -> unit
 
+  (** [destroy fn] rm dbm files [fn ^ ".pag"] and [fn ^ ".dir"]. *)
+  val destroy: string -> unit
+
   (** [mem pht key] checks if [key] is bound in [pht]. *)
   val mem: 'a t -> 'a -> bool
 
@@ -163,6 +172,9 @@ module StrKeyToStrVal : sig
 
   (** [close pht] closes the previously opened [pht]. *)
   val close: t -> unit
+
+  (** [destroy fn] rm dbm files [fn ^ ".pag"] and [fn ^ ".dir"]. *)
+  val destroy: string -> unit
 
   (** [mem pht key] checks if [key] is bound in [pht]. *)
   val mem: t -> string -> bool
