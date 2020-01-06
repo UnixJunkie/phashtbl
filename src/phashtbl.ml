@@ -51,6 +51,12 @@ module StrKeyToGenVal = struct
   let find db k =
     value_of_string (Dbm.find db k)
 
+  let modify db k f =
+    let prev_v_opt =
+      try Some (find db k)
+      with Not_found -> None in
+    replace db k (f prev_v_opt)
+
   let iter f db =
     Dbm.iter (fun k v_str ->
         f k (value_of_string v_str)
@@ -98,6 +104,12 @@ module StrKeyToStrVal = struct
 
   let find db k =
     Dbm.find db k
+
+  let modify db k f =
+    let prev_v_opt =
+      try Some (find db k)
+      with Not_found -> None in
+    replace db k (f prev_v_opt)
 
   let iter f db =
     Dbm.iter (fun k v ->
@@ -147,6 +159,12 @@ module GenKeyToGenVal = struct
   let find db k =
     value_of_string (Dbm.find db (string_of_key k))
 
+  let modify db k f =
+    let prev_v_opt =
+      try Some (find db k)
+      with Not_found -> None in
+    replace db k (f prev_v_opt)
+
   let iter f db =
     Dbm.iter (fun k_str v_str ->
         f (key_of_string k_str) (value_of_string v_str)
@@ -194,6 +212,12 @@ module GenKeyToStrVal = struct
 
   let find db k =
     Dbm.find db (string_of_key k)
+
+  let modify db k f =
+    let prev_v_opt =
+      try Some (find db k)
+      with Not_found -> None in
+    replace db k (f prev_v_opt)
 
   let iter f db =
     Dbm.iter (fun k_str v ->

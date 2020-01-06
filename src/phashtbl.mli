@@ -35,6 +35,12 @@ module GenKeyToGenVal : sig
       binding is discarded and replaced by [value]. *)
   val replace: ('a, 'b) t -> 'a -> 'b -> unit
 
+  (** [modify pht key f] binds [key] to [f prev_val_opt] in [pht].
+      The previous binding for [key] is replaced by [f (Some prev_val)].
+      If there was no such binding, a binding from [key] to [f None]
+      is added. *)
+  val modify: ('a, 'b) t -> 'a -> ('b option -> 'b) -> unit
+
   (** [remove pht key] removes [key] and its bound value from [pht].
       If [key] is unbound in [pht], raises Dbm_error. *)
   val remove: ('a, 'b) t -> 'a -> unit
@@ -85,6 +91,12 @@ module StrKeyToGenVal : sig
       If [pht] already contains a binding for [key], that previous
       binding is discarded and replaced by [value]. *)
   val replace: 'b t -> string -> 'b -> unit
+
+  (** [modify pht key f] binds [key] to [f prev_val_opt] in [pht].
+      The previous binding for [key] is replaced by [f (Some prev_val)].
+      If there was no such binding, a binding from [key] to [f None]
+      is added. *)
+  val modify: 'b t -> string -> ('b option -> 'b) -> unit
 
   (** [remove pht key] removes [key] and its bound value from [pht].
       If [key] is unbound in [pht], raises Dbm_error. *)
@@ -137,6 +149,12 @@ module GenKeyToStrVal : sig
       binding is discarded and replaced by [value]. *)
   val replace: 'a t -> 'a -> string -> unit
 
+  (** [modify pht key f] binds [key] to [f prev_val_opt] in [pht].
+      The previous binding for [key] is replaced by [f (Some prev_val)].
+      If there was no such binding, a binding from [key] to [f None]
+      is added. *)
+  val modify: 'a t -> 'a -> (string option -> string) -> unit
+
   (** [remove pht key] removes [key] and its bound value from [pht].
       If [key] is unbound in [pht], raises Dbm_error. *)
   val remove: 'a t -> 'a -> unit
@@ -187,6 +205,12 @@ module StrKeyToStrVal : sig
       If [pht] already contains a binding for [key], that previous
       binding is discarded and replaced by [value]. *)
   val replace: t -> string -> string -> unit
+
+  (** [modify pht key f] binds [key] to [f prev_val_opt] in [pht].
+      The previous binding for [key] is replaced by [f (Some prev_val)].
+      If there was no such binding, a binding from [key] to [f None]
+      is added. *)
+  val modify: t -> string -> (string option -> string) -> unit
 
   (** [remove pht key] removes [key] and its bound value from [pht].
       If [key] is unbound in [pht], raises Dbm_error. *)
