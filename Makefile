@@ -1,7 +1,7 @@
 .PHONY: build install uninstall reinstall doc test
 
 build:
-	jbuilder build @install -j 16
+	dune build @install -j 16
 
 clean:
 	rm -rf _build doc/*
@@ -10,7 +10,7 @@ edit:
 	emacs src/*.ml TODO commands.sh &
 
 install: build
-	jbuilder install
+	dune install
 
 uninstall:
 	jubilder uninstall
@@ -22,5 +22,5 @@ doc:
 	ocamldoc -html -d doc src/phashtbl.mli
 
 test:
-	jbuilder build _build/default/src/test.exe
+	dune build _build/default/src/test.exe
 	_build/default/src/test.exe
